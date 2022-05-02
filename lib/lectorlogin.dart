@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:startup_namer/lector.dart';
 
 class LectorLogin extends StatelessWidget {
-  const LectorLogin({Key? key}) : super(key: key);
+  LectorLogin({Key? key}) : super(key: key);
+  final _formKey = GlobalKey<FormState>();
+  final email = TextEditingController();
+  final password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,94 +35,139 @@ class LectorLogin extends StatelessWidget {
                         fontSize: 25),
                   ),
                 ),
-                Container(
-                  alignment: Alignment.center,
-                  width: 400,
-                  padding: EdgeInsets.all(15),
-                  child: TextField(
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      labelStyle: TextStyle(color: Colors.black),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.red, width: 2.5),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  width: 400,
-                  padding: EdgeInsets.all(15),
-                  child: TextField(
-                    obscureText: true,
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      labelText: "Password",
-                      labelStyle: TextStyle(color: Colors.black),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.red, width: 2.5),
-                      ),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        height: 75,
-                        padding: EdgeInsets.all(15),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red[900],
-                            onPrimary: Colors.white,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(
-                              context
-                            );
-                          },
-                          child: Text(
-                            'Ga Terug',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontFamily: 'Open Sans',
+                Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          width: 400,
+                          padding: EdgeInsets.all(15),
+                          child: TextFormField(
+                            controller: email,
+                            validator: (value) {
+                              if (value == null || value.isEmpty || !value.contains("@ap.be")) {
+                                return 'AP Email dient correct ingevoerd te worden (e.g. lectorname@ap.be).';
+                              }
+                              return null;
+                            },
+                            style: TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              labelText: "Email",
+                              labelStyle: TextStyle(color: Colors.black),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 2.5),
+                              ),
                             ),
                           ),
-                        )),
-                    Container(
-                        height: 75,
-                        padding: EdgeInsets.all(15),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red[900],
-                            onPrimary: Colors.white,
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LectorPage()),
-                            );
-                          },
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontFamily: 'Open Sans',
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          width: 400,
+                          padding: EdgeInsets.all(15),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value.length < 8) {
+                                return 'Wachtwoord moet ingevuld en minstens 8 karakters zijn.';
+                              }
+                              return null;
+                            },
+                            controller: password,
+                            obscureText: true,
+                            style: TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              labelStyle: TextStyle(color: Colors.black),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                borderSide:
+                                    BorderSide(color: Colors.red, width: 2.5),
+                              ),
                             ),
                           ),
-                        ))
-                  ],
-                )
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                height: 75,
+                                padding: EdgeInsets.all(15),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.red[900],
+                                    onPrimary: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'Ga Terug',
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontFamily: 'Open Sans',
+                                    ),
+                                  ),
+                                )),
+                            Container(
+                                height: 75,
+                                padding: EdgeInsets.all(15),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.red[900],
+                                    onPrimary: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      // If the form is valid, display a snackbar. In the real world,
+                                      // you'd often call a server or save the information in a database.
+                                      if(email.text == "lector@ap.be" && password.text == "lectorvanap123"){
+                                        Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LectorPage()),
+                                      );
+                                      }
+                                      else{
+                                        ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Credentials zijn onjuist.')),
+                                      );
+                                      }
+                                      
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Credentials moeten ingevuld worden.')),
+                                      );
+                                    }
+                                  },
+                                  child: Text(
+                                    'Login',
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontFamily: 'Open Sans',
+                                    ),
+                                  ),
+                                ))
+                          ],
+                        )
+                      ],
+                    ))
               ]),
         ));
   }

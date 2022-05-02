@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Examen Monitoring Tool',
       theme: ThemeData(primarySwatch: Colors.blue,
       ),
-      home: MeerkeuzevraagToevoegenPagina(),
+      home: LectorLogin(),
     );
   }
 }
