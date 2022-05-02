@@ -20,9 +20,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Examen Monitoring Tool',
-      theme: ThemeData(primarySwatch: Colors.blue,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
-      home: MeerkeuzevraagToevoegenPagina(),
+      home: LectorPage(),
     );
   }
 }

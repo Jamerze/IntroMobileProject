@@ -228,9 +228,60 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         )
       ],
     ),
-    Text(
-      'Instellingen',
-      style: optionStyle,
+    Column(
+      children: [
+        SizedBox(
+          width: 200,
+          child: TextField(
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              labelText: "Oud wachtwoord",
+              labelStyle: TextStyle(color: Colors.black),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(color: Colors.red, width: 2.5),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 200,
+          child: TextField(
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              labelText: "Nieuw wachtwoord",
+              labelStyle: TextStyle(color: Colors.black),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(color: Colors.red, width: 2.5),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 200,
+          child: TextField(
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              labelText: "Wachtwoord herhalen",
+              labelStyle: TextStyle(color: Colors.black),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(color: Colors.red, width: 2.5),
+              ),
+            ),
+          ),
+        ),
+      ],
     )
   ];
 
