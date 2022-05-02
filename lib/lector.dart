@@ -281,13 +281,50 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             ),
           ),
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.red[900], // background
+        Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                  height: 75,
+                  padding: EdgeInsets.all(15),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red[900],
+                        onPrimary: Colors.white,
+                      ),
+                      onPressed: () {},
+                      child: Row(children: [
+                        Text(
+                          'Wijzig',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontFamily: 'Open Sans',
+                          ),
+                        ),
+                      ]))),
+              Container(
+                  height: 75,
+                  padding: EdgeInsets.all(15),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Color.fromARGB(255, 79, 79, 79),
+                        onPrimary: Colors.white,
+                      ),
+                      onPressed: () {},
+                      child: Row(children: [
+                        Text(
+                          'Uitloggen',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontFamily: 'Open Sans',
+                          ),
+                        ),
+                      ]))),
+            ],
           ),
-          onPressed: () {},
-          child: Icon(Icons.add_comment_rounded, size: 50, color: Colors.white),
-        ),
+          padding: EdgeInsets.only(top: 45),
+        )
       ],
     )
   ];
