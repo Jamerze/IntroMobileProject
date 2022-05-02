@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   english_words: ^4.0.0
+  firebase_core: ^1.15.0
+  firebase_database: ^9.0.12
 # #enddocregion dependencies
 
 dev_dependencies:
