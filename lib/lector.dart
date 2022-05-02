@@ -281,6 +281,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             ),
           ),
         ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.red[900], // background
+          ),
+          onPressed: () {},
+          child: Icon(Icons.add_comment_rounded, size: 50, color: Colors.white),
+        ),
       ],
     )
   ];
