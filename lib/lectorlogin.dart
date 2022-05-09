@@ -1,18 +1,16 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:startup_namer/lector.dart';
+import 'firebase_service.dart';
 
 class LectorLogin extends StatelessWidget {
   LectorLogin({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
   final email = TextEditingController();
   final password = TextEditingController();
-  final fb = FirebaseDatabase.instance;
 
   @override
   Widget build(BuildContext context) {
-    final ref = fb.reference();
     return Scaffold(
         appBar: AppBar(
           title: Text("Examinator",
@@ -132,12 +130,12 @@ class LectorLogin extends StatelessWidget {
                                     primary: Colors.red[900],
                                     onPrimary: Colors.white,
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
                                       // If the form is valid, display a snackbar. In the real world,
                                       // you'd often call a server or save the information in a database.
-                                      if (email.text == "lector@ap.be" &&
-                                          password.text == "lectorvanap123") {
+                                      if (await FirebaseService.authorizeLector(
+                                          email.text, password.text)) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
