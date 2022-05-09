@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:startup_namer/lector.dart';
 
@@ -6,9 +8,11 @@ class LectorLogin extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final email = TextEditingController();
   final password = TextEditingController();
+  final fb = FirebaseDatabase.instance;
 
   @override
   Widget build(BuildContext context) {
+    final ref = fb.reference();
     return Scaffold(
         appBar: AppBar(
           title: Text("Examinator",
@@ -46,7 +50,9 @@ class LectorLogin extends StatelessWidget {
                           child: TextFormField(
                             controller: email,
                             validator: (value) {
-                              if (value == null || value.isEmpty || !value.contains("@ap.be")) {
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  !value.contains("@ap.be")) {
                                 return 'AP Email dient correct ingevoerd te worden (e.g. lectorname@ap.be).';
                               }
                               return null;
@@ -130,23 +136,22 @@ class LectorLogin extends StatelessWidget {
                                     if (_formKey.currentState!.validate()) {
                                       // If the form is valid, display a snackbar. In the real world,
                                       // you'd often call a server or save the information in a database.
-                                      if(email.text == "lector@ap.be" && password.text == "lectorvanap123"){
+                                      if (email.text == "lector@ap.be" &&
+                                          password.text == "lectorvanap123") {
                                         Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const LectorPage()),
-                                      );
-                                      }
-                                      else{
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const LectorPage()),
+                                        );
+                                      } else {
                                         ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Credentials zijn onjuist.')),
-                                      );
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text(
+                                                  'Credentials zijn onjuist.')),
+                                        );
                                       }
-                                      
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(

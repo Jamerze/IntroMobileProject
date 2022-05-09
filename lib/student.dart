@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/codecheckvraagtoevoegen.dart';
-import 'package:startup_namer/meerkeuzevraagtoevoegen.dart';
-import 'package:startup_namer/openvraagtoevoegen.dart';
 
-class LectorPage extends StatefulWidget {
-  const LectorPage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  _LectorPageState createState() => _LectorPageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _LectorPageState extends State<LectorPage> {
+class _HomePageState extends State<HomePage> {
   int pageIndex = 0;
 
   final pages = [
-    const ExamenPagina(),
-    const StudentenLijstPagina(),
-    const InstellingenPagina(),
+    const Page1(),
+    const Page2(),
+    const Page3(),
   ];
 
   @override
@@ -92,8 +89,8 @@ class _LectorPageState extends State<LectorPage> {
   }
 }
 
-class ExamenPagina extends StatelessWidget {
-  const ExamenPagina({Key? key}) : super(key: key);
+class Page1 extends StatelessWidget {
+  const Page1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -172,14 +169,7 @@ class ExamenPagina extends StatelessWidget {
                         primary: Colors.red[900],
                         onPrimary: Colors.white,
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MeerkeuzevraagToevoegenPagina()),
-                                  );
-                      },
+                      onPressed: () {},
                       child: Row(children: [
                         Icon(Icons.add_task_rounded,
                             size: 30, color: Colors.white),
@@ -199,14 +189,7 @@ class ExamenPagina extends StatelessWidget {
                         primary: Colors.red[900],
                         onPrimary: Colors.white,
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            OpenvraagToevoegenPagina()),
-                                  );
-                      },
+                      onPressed: () {},
                       child: Row(children: [
                         Icon(Icons.add_task_rounded,
                             size: 30, color: Colors.white),
@@ -226,14 +209,7 @@ class ExamenPagina extends StatelessWidget {
                         primary: Colors.red[900],
                         onPrimary: Colors.white,
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            CodecheckvraagToevoegenPagina()),
-                                  );
-                      },
+                      onPressed: () {},
                       child: Row(children: [
                         Icon(Icons.add_task_rounded,
                             size: 30, color: Colors.white),
@@ -254,13 +230,12 @@ class ExamenPagina extends StatelessWidget {
   }
 }
 
-class StudentenLijstPagina extends StatelessWidget {
-  const StudentenLijstPagina({Key? key}) : super(key: key);
+class Page2 extends StatelessWidget {
+  const Page2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
         child: Column(
       children: [
         Container(
@@ -332,8 +307,8 @@ class StudentenLijstPagina extends StatelessWidget {
   }
 }
 
-class InstellingenPagina extends StatelessWidget {
-  const InstellingenPagina({Key? key}) : super(key: key);
+class Page3 extends StatelessWidget {
+  const Page3({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
