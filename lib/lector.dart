@@ -230,7 +230,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     ),
     Column(
       children: [
-        SizedBox(
+        Container(
+          padding: EdgeInsets.only(top: 45),
           width: 200,
           child: TextField(
             style: TextStyle(color: Colors.black),
@@ -247,7 +248,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             ),
           ),
         ),
-        SizedBox(
+        Container(
+          padding: EdgeInsets.only(top: 10),
           width: 200,
           child: TextField(
             style: TextStyle(color: Colors.black),
@@ -264,7 +266,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             ),
           ),
         ),
-        SizedBox(
+        Container(
+          padding: EdgeInsets.only(top: 10),
           width: 200,
           child: TextField(
             style: TextStyle(color: Colors.black),
@@ -323,7 +326,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       ]))),
             ],
           ),
-          padding: EdgeInsets.only(top: 45),
+          padding: EdgeInsets.only(top: 25),
         )
       ],
     )
