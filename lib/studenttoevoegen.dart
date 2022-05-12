@@ -1,13 +1,12 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:startup_namer/firebase_service.dart';
 import 'package:startup_namer/lector.dart';
-import 'firebase_service.dart';
 
-class LectorLogin extends StatelessWidget {
-  LectorLogin({Key? key}) : super(key: key);
+class StudentToevoegenPagina extends StatelessWidget {
+  StudentToevoegenPagina({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
-  final email = TextEditingController();
-  final password = TextEditingController();
+  final studentenNr = TextEditingController();
+  final studentenNaam = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,43 +20,58 @@ class LectorLogin extends StatelessWidget {
           leading: Image.asset("../assets/AP_logo_letters_rgb.jpg"),
           leadingWidth: 70,
         ),
-        body: Padding(
-          padding: EdgeInsets.all(15),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(15),
-                  child: Text(
-                    'Log in als Lector',
-                    style: TextStyle(
-                        color: Colors.red[800],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25),
+        body: Form(
+            key: _formKey,
+            child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(children: [
+                  Container(
+                    width: 60,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red[900],
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Row(children: [
+                          Icon(
+                            Icons.arrow_back_rounded,
+                            color: Colors.white,
+                          ),
+                        ])),
                   ),
-                ),
-                Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(15),
+                          child: Text(
+                            'Student Toevoegen',
+                            style: TextStyle(
+                                color: Colors.red[800],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25),
+                          ),
+                        ),
                         Container(
                           alignment: Alignment.center,
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: email,
+                            controller: studentenNr,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
-                                  !value.contains("@ap.be")) {
-                                return 'AP Email dient correct ingevoerd te worden (e.g. lectorname@ap.be).';
+                                  !value.contains('s') || value.length != 7 || int.tryParse(value.substring(1,7)) == null) {
+                                return 'Vul een studentenNr in (eg. s345765)';
                               }
                               return null;
                             },
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
-                              labelText: "Email",
+                              labelText: "StudentenNr",
                               labelStyle: TextStyle(color: Colors.black),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25),
@@ -75,54 +89,28 @@ class LectorLogin extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
+                            controller: studentenNaam,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
-                                  value.length < 8) {
-                                return 'Wachtwoord moet ingevuld en minstens 8 karakters zijn.';
+                                  value.length < 4 || !value.contains(" ")) {
+                                return 'Vul de voornaam en achternaam van de student in.';
                               }
                               return null;
                             },
-                            controller: password,
-                            obscureText: true,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
-                              labelText: "Password",
+                              labelText: "StudentenNaam",
                               labelStyle: TextStyle(color: Colors.black),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
+                              enabledBorder: OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
                                 borderSide:
                                     BorderSide(color: Colors.red, width: 2.5),
                               ),
                             ),
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                                height: 75,
-                                padding: EdgeInsets.all(15),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.red[900],
-                                    onPrimary: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    'Ga Terug',
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontFamily: 'Open Sans',
-                                    ),
-                                  ),
-                                )),
-                            Container(
+                        Container(
                                 height: 75,
                                 padding: EdgeInsets.all(15),
                                 child: ElevatedButton(
@@ -132,47 +120,47 @@ class LectorLogin extends StatelessWidget {
                                   ),
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      
                                       // If the form is valid, display a snackbar. In the real world,
                                       // you'd often call a server or save the information in a database.
-                                      if (await FirebaseService.authorizeLector(
-                                          email.text, password.text)) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const LectorPage()),
-                                        );
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text(
-                                                  'Credentials zijn onjuist.')),
-                                        );
-                                      }
+                                      if (await FirebaseService.studentToevoegen(
+                                    studentenNr.text,
+                                    studentenNaam.text)) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'De student werd succesvol toegevoegd.')),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LectorPage()),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'De student kon niet toegevoegd worden vanwege interne fouten.')),
+                                  );
+                                }
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                'Credentials moeten ingevuld worden.')),
+                                                'Student kon niet toegevoegd worden vanwege fouten.')),
                                       );
                                     }
                                   },
                                   child: Text(
-                                    'Login',
+                                    'Voeg Student toe',
                                     style: TextStyle(
                                       fontSize: 20.0,
                                       fontFamily: 'Open Sans',
                                     ),
                                   ),
                                 ))
-                          ],
-                        )
-                      ],
-                    ))
-              ]),
-        ));
+                      ]),
+                ]))));
   }
 }

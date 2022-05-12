@@ -1,91 +1,161 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:startup_namer/firebase_service.dart';
+import 'package:startup_namer/lector.dart';
+import 'package:startup_namer/studenttoevoegen.dart';
+import 'package:startup_namer/test2.dart';
 
-class Test extends StatelessWidget {
-  const Test({Key? key}) : super(key: key);
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
 
+class _HomeState extends State<Home> {
+  final fb = FirebaseDatabase.instance;
+  TextEditingController second = TextEditingController();
+
+  TextEditingController third = TextEditingController();
+  var l;
+  var g;
+  var k;
   @override
   Widget build(BuildContext context) {
-    const appTitle = 'Form Validation Demo';
+    final ref = fb.ref().child('students');
 
-    return MaterialApp(
-      title: appTitle,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(appTitle),
-        ),
-        body: const MyCustomForm(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Examinator",
+            style: TextStyle(
+                fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.red[900],
+        centerTitle: true,
+        leading: Image.asset("../assets/AP_logo_letters_rgb.jpg"),
+        leadingWidth: 70,
       ),
-    );
-  }
-}
+      body: Column(children: [
+        Padding(child: Text("Studenten", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)), padding: EdgeInsets.all(16.0),),
+        Center(child: 
+      FirebaseAnimatedList(
+        query: ref,
+        shrinkWrap: true,
+        itemBuilder: (context, snapshot, animation, index) {
+          var v =
+              snapshot.value.toString(); // {subtitle: webfun, title: subscribe}
+          
+          g = v.replaceAll(
+              RegExp("{|}|subtitle: |title: "), ""); // webfun, subscribe
+          g.trim();
 
-// Create a Form widget.
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({Key? key}) : super(key: key);
+          l = g.split(','); // [webfun,  subscribe}]
 
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
-}
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                k = snapshot.key;
+              });
 
-// Create a corresponding State class.
-// This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
             },
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(
-              labelText: "Email",
-              labelStyle: TextStyle(color: Colors.black),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25),
-                borderSide: BorderSide(color: Colors.red, width: 2.5),
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 300, right: 300,top: 5, bottom: 5),
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: Colors.white,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  tileColor: Colors.red[900],
+                  title: new Center(child:Text(
+                    l[1],
+                    // 'dd',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
+                    ),
+                  ),),
+                  subtitle: new Center(child:Text(
+                    l[0],
+                    // 'dd',
+
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black
+                    ),
+                  ),),
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
-                  // If the form is valid, display a snackbar. In the real world,
-                  // you'd often call a server or save the information in a database.
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
-                }
-              },
-              child: const Text('Submit'),
-            ),
-          ),
-        ],
-      ),
+          );
+        },
+      ),),
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Container(
+                  height: 75,
+                  padding: EdgeInsets.all(15),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red[900],
+                      onPrimary: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => StudentToevoegenPagina()),
+                      );
+                    },
+                    child: Icon(Icons.person_add_alt_rounded,
+                        size: 30, color: Colors.white),
+                  )),
+              Container(
+                  height: 75,
+                  padding: EdgeInsets.all(15),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red[900],
+                      onPrimary: Colors.white,
+                    ),
+                    onPressed: () async {
+                      if (await FirebaseService.studentenVerwijderen()) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  'De studenten werden succesvol verwijderd.')),
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LectorPage()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  'De studenten kunnen op dit moment niet verwijderd worden.')),
+                        );
+                      }
+                    },
+                    child: Icon(Icons.delete, size: 30, color: Colors.white),
+                  )),
+            ])
+      ],)
     );
+  }
+
+  upd() async {
+    DatabaseReference ref1 = FirebaseDatabase.instance.ref("todos/$k");
+
+// Only update the name, leave the age and address!
+    await ref1.update({
+      "title": second.text,
+      "subtitle": third.text,
+    });
+    second.clear();
+    third.clear();
   }
 }
