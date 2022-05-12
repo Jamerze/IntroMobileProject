@@ -1,11 +1,11 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:startup_namer/Classes/Student.dart';
 import 'package:startup_namer/lector.dart';
 
 class FirebaseService {
   // ignore: deprecated_member_use
   static final databaseReference = FirebaseDatabase.instance.reference();
-
   static Future<bool> authorizeLector(
       String lectorEmail, String password) async {
     int i = 0;
@@ -26,5 +26,38 @@ class FirebaseService {
     } else {
       return false;
     }
+  }
+
+  static Future<bool> authorizeStudent(String sNumber) async {
+    int i = 0;
+    await databaseReference
+        .child('students')
+        .get()
+        .asStream()
+        .forEach((element) {
+      element.children.forEach((a) {
+        if (a.child('sId').value == sNumber) {
+          i++;
+        }
+      });
+    });
+    if (i == 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<List<Student>> getStudents() async {
+    // ignore: deprecated_member_use
+    List<Student> studentList = [];
+    await databaseReference.child('students').get().asStream().forEach((s) {
+      s.children.forEach((element) {
+        studentList.add(Student(element.child('sId').value.toString(),
+            element.child('name').value.toString()));
+        print('added student');
+      });
+    });
+    return studentList;
   }
 }
