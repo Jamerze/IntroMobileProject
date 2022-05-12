@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:startup_namer/studentLandingPage.dart';
 import 'Classes/Student.dart';
 import 'firebase_service.dart';
 import 'lector.dart';
@@ -10,8 +11,6 @@ class StudentLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _displayText = 'results go here';
-
     return Scaffold(
         appBar: AppBar(
           title: Text("Examinator",
@@ -19,7 +18,7 @@ class StudentLogin extends StatelessWidget {
                   fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
           backgroundColor: Colors.red[900],
           centerTitle: true,
-          leading: Image.asset("../assets/AP_logo_letters_rgb.jpg"),
+          leading: Image.asset("../assets/AP_logo_letters_mono.png"),
           leadingWidth: 70,
         ),
         body: Padding(
@@ -111,7 +110,7 @@ class StudentLogin extends StatelessWidget {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const LectorPage()),
+                                                StudentLandingPage()),
                                         //moet nog veranderd worden naar student landing page
                                       );
                                     } else {

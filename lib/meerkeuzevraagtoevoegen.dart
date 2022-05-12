@@ -17,7 +17,7 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                   fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
           backgroundColor: Colors.red[900],
           centerTitle: true,
-          leading: Image.asset("../assets/AP_logo_letters_rgb.jpg"),
+          leading: Image.asset("../assets/AP_logo_letters_mono.png"),
           leadingWidth: 70,
         ),
         body: Form(
@@ -145,17 +145,17 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                               // Validate returns true if the form is valid, or false otherwise.
                               if (_formKey.currentState!.validate()) {
                                 // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.                          
+                                // you'd often call a server or save the information in a database.
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => const LectorPage()),
-                                );          
-                              }
-                              else{
+                                );
+                              } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text('De vraag kon niet toegevoegd worden vanwege enkele fouten.')),
+                                      content: Text(
+                                          'De vraag kon niet toegevoegd worden vanwege enkele fouten.')),
                                 );
                               }
                             },

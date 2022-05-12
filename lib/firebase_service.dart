@@ -37,6 +37,8 @@ class FirebaseService {
         .forEach((element) {
       element.children.forEach((a) {
         if (a.child('sId').value == sNumber) {
+          Student.setCurrentStudent(Student(a.child('sId').value.toString(),
+              a.child('name').value.toString()));
           i++;
         }
       });

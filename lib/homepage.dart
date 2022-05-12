@@ -15,7 +15,7 @@ class Homepage extends StatelessWidget {
                           fontWeight: FontWeight.bold)),
                   backgroundColor: Colors.red[900],
                   centerTitle: true,
-                  leading: Image.asset("../assets/AP_logo_letters_rgb.jpg"),
+                  leading: Image.asset("../assets/AP_logo_letters_mono.png"),
                   leadingWidth: 70,
                 ),
                 body: SafeArea(
@@ -38,8 +38,7 @@ class Homepage extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            LectorLogin()),
+                                        builder: (context) => LectorLogin()),
                                   );
                                 },
                                 child: Text(

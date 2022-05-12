@@ -14,7 +14,7 @@ class StartingPage extends StatelessWidget {
                   fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
           backgroundColor: Colors.red[900],
           centerTitle: true,
-          leading: Image.asset("../assets/AP_logo_letters_rgb.jpg"),
+          leading: Image.asset("../assets/AP_logo_letters_mono.png"),
           leadingWidth: 70,
         ),
         body: Padding(
