@@ -17,6 +17,7 @@ class FirebaseService {
       element.children.forEach((a) {
         if (a.child('email').value == lectorEmail &&
             a.child('pass').value == password) {
+          Lector.setCurrentLector(Lector(a.key));
           i++;
         }
       });

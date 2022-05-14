@@ -2,6 +2,23 @@ import 'dart:js';
 
 import 'package:flutter/material.dart';
 
+class Lector {
+  static Lector _currentLector = Lector("");
+  String name = "";
+
+  Lector(n) {
+    name = n;
+  }
+
+  static void setCurrentLector(lector) {
+    _currentLector = lector;
+  }
+
+  static Lector getCurrentLector() {
+    return _currentLector;
+  }
+}
+
 class LectorPage extends StatelessWidget {
   const LectorPage({Key? key}) : super(key: key);
 
@@ -244,14 +261,25 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Examinator",
-            style: TextStyle(
-                fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.red[900],
-        centerTitle: true,
-        leading: Image.asset("../assets/AP_logo_letters_mono.png"),
-        leadingWidth: 70,
-      ),
+          title: Text("Examinator",
+              style: TextStyle(
+                  fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
+          backgroundColor: Colors.red[900],
+          centerTitle: true,
+          leading: Image.asset("../assets/AP_logo_letters_mono.png"),
+          leadingWidth: 70,
+          actions: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+            ),
+            Text(
+              Lector.getCurrentLector().name,
+              style: TextStyle(
+                fontSize: 20.0,
+                fontFamily: 'Open Sans',
+              ),
+            ),
+          ]),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

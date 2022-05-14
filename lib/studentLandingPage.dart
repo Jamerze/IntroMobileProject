@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:startup_namer/startingPage.dart';
+import 'package:startup_namer/studentExamPage.dart';
 import 'Classes/Student.dart';
 import 'firebase_service.dart';
 
@@ -52,7 +53,7 @@ class StudentLandingPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => StartingPage()),
+                                  builder: (context) => studentExamPage()),
                             );
                           },
                           child: Text(
