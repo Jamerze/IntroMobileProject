@@ -15,6 +15,7 @@ dependencies:
   firebase_core: ^1.15.0
   firebase_database: ^9.0.12
   flutter_countdown_timer: ^4.1.0
+  http: ^0.13.4
 # #enddocregion dependencies
 
 dev_dependencies:

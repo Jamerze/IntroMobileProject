@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:startup_namer/firebase_service.dart';
 import 'package:startup_namer/lector.dart';
-import 'firebase_service.dart';
 
-class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
-  MeerkeuzevraagToevoegenPagina({Key? key}) : super(key: key);
+class StudentToevoegenPagina extends StatelessWidget {
+  StudentToevoegenPagina({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
-  final vraag = TextEditingController();
-  final antwoorden = TextEditingController();
-  final correctantwoord = TextEditingController();
+  final studentenNr = TextEditingController();
+  final studentenNaam = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,7 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                   fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
           backgroundColor: Colors.red[900],
           centerTitle: true,
-          leading: Image.asset("../assets/AP_logo_letters_mono.png"),
+          leading: Image.asset("../assets/AP_logo_letters_rgb.jpg"),
           leadingWidth: 70,
         ),
         body: Form(
@@ -49,7 +48,7 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                           alignment: Alignment.center,
                           padding: EdgeInsets.all(15),
                           child: Text(
-                            'Meerkeuze Vraag Toevoegen',
+                            'Student Toevoegen',
                             style: TextStyle(
                                 color: Colors.red[800],
                                 fontWeight: FontWeight.bold,
@@ -61,18 +60,18 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: vraag,
+                            controller: studentenNr,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
-                                  value.length <= 5) {
-                                return 'Vul een vraag in (min. 5 karakters)';
+                                  !value.contains('s') || value.length != 7 || int.tryParse(value.substring(1,7)) == null) {
+                                return 'Vul een studentenNr in (eg. s345765)';
                               }
                               return null;
                             },
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
-                              labelText: "Titel",
+                              labelText: "StudentenNr",
                               labelStyle: TextStyle(color: Colors.black),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25),
@@ -90,18 +89,18 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: antwoorden,
+                            controller: studentenNaam,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
-                                  !value.contains(";")) {
-                                return 'Antwoorden van elkaar gescheiden met puntkomma (;)';
+                                  value.length < 4 || !value.contains(" ")) {
+                                return 'Vul de voornaam en achternaam van de student in.';
                               }
                               return null;
                             },
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
-                              labelText: "Antwoorden",
+                              labelText: "StudentenNaam",
                               labelStyle: TextStyle(color: Colors.black),
                               enabledBorder: OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(
@@ -112,50 +111,24 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                           ),
                         ),
                         Container(
-                          alignment: Alignment.center,
-                          width: 400,
-                          padding: EdgeInsets.all(15),
-                          child: TextFormField(
-                            controller: correctantwoord,
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  !antwoorden.text.contains(value)) {
-                                return 'Antwoord komt niet in bovenstaande opties voor.';
-                              }
-                              return null;
-                            },
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              labelText: "Correct antwoord",
-                              labelStyle: TextStyle(color: Colors.black),
-                              enabledBorder: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.red, width: 2.5),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red[900], // background
-                            ),
-                            onPressed: () async {
-                              // Validate returns true if the form is valid, or false otherwise.
-                              if (_formKey.currentState!.validate()) {
-                                // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.
-                                if (await FirebaseService.examenvraagToevoegen(
-                                    antwoorden.text,
-                                    correctantwoord.text,
-                                    vraag.text,
-                                    "meerkeuze")) {
+                                height: 75,
+                                padding: EdgeInsets.all(15),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.red[900],
+                                    onPrimary: Colors.white,
+                                  ),
+                                  onPressed: () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      // If the form is valid, display a snackbar. In the real world,
+                                      // you'd often call a server or save the information in a database.
+                                      if (await FirebaseService.studentToevoegen(
+                                    studentenNr.text,
+                                    studentenNaam.text)) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text(
-                                            'De vraag werd succesvol toegevoegd.')),
+                                            'De student werd succesvol toegevoegd.')),
                                   );
                                   Navigator.push(
                                     context,
@@ -167,22 +140,26 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text(
-                                            'De vraag kon niet toegevoegd worden vanwege interne fouten.')),
+                                            'De student kon niet toegevoegd worden vanwege interne fouten.')),
                                   );
                                 }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'De vraag kon niet toegevoegd worden vanwege fouten in de invoer. Controleer of alles correct aangevuld is.')),
-                                );
-                              }
-                            },
-                            child: Icon(Icons.add_comment_rounded,
-                                size: 50, color: Colors.white),
-                          ),
-                          padding: EdgeInsets.only(top: 45),
-                        )
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Student kon niet toegevoegd worden vanwege fouten.')),
+                                      );
+                                    }
+                                  },
+                                  child: Text(
+                                    'Voeg Student toe',
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontFamily: 'Open Sans',
+                                    ),
+                                  ),
+                                ))
                       ]),
                 ]))));
   }

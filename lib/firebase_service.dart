@@ -16,6 +16,7 @@ class FirebaseService {
         .asStream()
         .forEach((element) {
       element.children.forEach((a) {
+        print(a.key);
         if (a.child('email').value == lectorEmail &&
             a.child('pass').value == password) {
           Lector.setCurrentLector(Lector(a.key));
@@ -52,6 +53,22 @@ class FirebaseService {
     }
   }
 
+  static Future<bool> updateLector(
+      String lectorEmail, String nieuwWachtwoord) async {
+    try {
+      int i = 0;
+      String lectorKey = await ontvangLectorKey(lectorEmail);
+
+      await databaseReference
+          .child('lectors/$lectorKey')
+          .child('pass')
+          .set(nieuwWachtwoord);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   static Future<List<Student>> getStudents() async {
     // ignore: deprecated_member_use
     List<Student> studentList = [];
@@ -69,5 +86,96 @@ class FirebaseService {
     final path = databaseReference.child('/examAnswers').child("/$sId");
     path.set({'answers': Exam.currentExam.answers}).then(
         (_) => print("sent to database"));
+  }
+
+  static Future<String> ontvangLectorKey(String lectorEmail) async {
+    String lectorKey = "";
+    await databaseReference
+        .child('lectors')
+        .get()
+        .asStream()
+        .forEach((element) {
+      element.children.forEach((a) {
+        if (a.child('email').value == lectorEmail) {
+          lectorKey = a.key.toString();
+        }
+      });
+    });
+    return lectorKey;
+  }
+
+  static Future<List<Student>> studentenOntvangen() async {
+    List<Student> studentenLijst = [];
+    await databaseReference
+        .child('students')
+        .get()
+        .asStream()
+        .forEach((element) {
+      element.children.forEach((a) {
+        studentenLijst.add(Student(
+            a.child('sId').value.toString(), a.child('name').value.toString()));
+      });
+    });
+
+    return studentenLijst;
+  }
+
+  static Future<bool> studentToevoegen(
+      String studentenNr, String studentenNaam) async {
+    int i = 0;
+    await databaseReference
+        .child('students')
+        .child("student" + studentenNr.substring(1, studentenNr.length))
+        .set({"sId": studentenNr, "name": studentenNaam});
+    await studentenOntvangen();
+    return true;
+  }
+
+  static Future<bool> studentenVerwijderen() async {
+    try {
+      await databaseReference.child('studenten').remove();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> examenvraagToevoegen(String antwoorden,
+      String correctAntwoord, String vraag, String vraagType) async {
+    int i = await laatsteVraagIdPlus1Terugkrijgen();
+    try {
+      await databaseReference.child('vragen').child('Vraag$i').set({
+        "Antwoorden": antwoorden,
+        "Correct_antwoord": correctAntwoord,
+        "Vraag": vraag,
+        "VraagType": vraagType,
+        "Vraag_id": i
+      });
+
+      print('$vraagType vraag toegevoegd');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> examenVerwijderen() async {
+    try {
+      await databaseReference.child('vragen').remove();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<int> laatsteVraagIdPlus1Terugkrijgen() async {
+    DataSnapshot laatsteVraag =
+        await databaseReference.child('vragen').get().asStream().last;
+    if (laatsteVraag.children.length == 0) {
+      return 1;
+    }
+    return int.parse(
+            laatsteVraag.children.last.child('Vraag_id').value.toString()) +
+        1;
   }
 }

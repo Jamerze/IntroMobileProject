@@ -8,7 +8,8 @@ import 'package:startup_namer/openvraagtoevoegen.dart';
 import 'package:startup_namer/lector.dart';
 import 'package:startup_namer/startingPage.dart';
 import 'package:startup_namer/studentlogin.dart';
-import 'package:startup_namer/test.dart';
+import 'package:startup_namer/student.dart';
+import 'package:startup_namer/studenttoevoegen.dart';
 
 import 'lectorlogin.dart';
 

@@ -16,7 +16,7 @@ class Homepage extends StatelessWidget {
                           fontWeight: FontWeight.bold)),
                   backgroundColor: Colors.red[900],
                   centerTitle: true,
-                  leading: Image.asset("../assets/AP_logo_letters_mono.png"),
+                  leading: Image.asset("../assets/AP_logo_letters_rgb.jpg"),
                   leadingWidth: 70,
                 ),
                 body: SafeArea(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:startup_namer/firebase_service.dart';
 import 'package:startup_namer/lector.dart';
+import 'package:startup_namer/lectorlogin.dart';
 
 class CodecheckvraagToevoegenPagina extends StatelessWidget {
   CodecheckvraagToevoegenPagina({Key? key}) : super(key: key);
@@ -137,16 +139,34 @@ class CodecheckvraagToevoegenPagina extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       primary: Colors.red[900], // background
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       // Validate returns true if the form is valid, or false otherwise.
                       if (_formKey.currentState!.validate()) {
                         // If the form is valid, display a snackbar. In the real world,
                         // you'd often call a server or save the information in a database.
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LectorPage()),
-                        );
+                        if (await FirebaseService.examenvraagToevoegen(
+                                    foutievecode.text,
+                                    correctecode.text,
+                                    vraag.text,
+                                    "codecheck")) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'De vraag werd succesvol toegevoegd.')),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LectorPage()),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'De vraag kon niet toegevoegd worden vanwege interne fouten.')),
+                                  );
+                                }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
