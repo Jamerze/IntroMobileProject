@@ -3,6 +3,7 @@ import 'dart:js';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 
 class Lector {
   static Lector _currentLector = Lector("");
@@ -248,8 +249,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ],
     ),
     new FlutterMap(
-        options:
-            new MapOptions(center: new LatLng(40.71, -74.00), minZoom: 10.0),
+        options: new MapOptions(
+            center: new LatLng(51.22998926200244, 4.416182948472075),
+            minZoom: 10.0),
         layers: [
           new TileLayerOptions(
               urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -258,7 +260,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             new Marker(
                 width: 45.0,
                 height: 45.0,
-                point: new LatLng(40.71, -74.00),
+                point: new LatLng(51.22998926200244, 4.416182948472075),
                 builder: (context) => new Container(
                       child: IconButton(
                         icon: Icon(Icons.location_on),
