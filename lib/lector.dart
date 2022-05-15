@@ -6,6 +6,7 @@ import 'package:startup_namer/firebase_service.dart';
 import 'package:startup_namer/homepage.dart';
 import 'package:startup_namer/meerkeuzevraagtoevoegen.dart';
 import 'package:startup_namer/openvraagtoevoegen.dart';
+import 'package:startup_namer/searchStudent.dart';
 import 'package:startup_namer/startingPage.dart';
 import 'package:startup_namer/studenttoevoegen.dart';
 
@@ -47,14 +48,25 @@ class _LectorPageState extends State<LectorPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Examinator",
-            style: TextStyle(
-                fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.red[900],
-        centerTitle: true,
-        leading: Image.asset("../assets/AP_logo_letters_rgb.jpg"),
-        leadingWidth: 70,
-      ),
+            title: Text("Examinator",
+                style: TextStyle(
+                    fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.red[900],
+            centerTitle: true,
+            leading: Image.asset("../assets/AP_logo_letters_mono.png"),
+            leadingWidth: 70,
+            actions: <Widget>[
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+              ),
+              Text(
+                Lector.getCurrentLector().name,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontFamily: 'Open Sans',
+                ),
+              ),
+            ]),
       body: pages[pageIndex],
       bottomNavigationBar: buildMyNavBar(context),
     );
@@ -337,26 +349,6 @@ class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
     final ref = fb.ref().child('students');
 
     return Scaffold(
-        appBar: AppBar(
-            title: Text("Examinator",
-                style: TextStyle(
-                    fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
-            backgroundColor: Colors.red[900],
-            centerTitle: true,
-            leading: Image.asset("../assets/AP_logo_letters_mono.png"),
-            leadingWidth: 70,
-            actions: <Widget>[
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
-              ),
-              Text(
-                Lector.getCurrentLector().name,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily: 'Open Sans',
-                ),
-              ),
-            ]),
         body: Column(
           children: [
             Padding(
@@ -397,7 +389,7 @@ class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
                           tileColor: Colors.red[900],
                           title: new Center(
                             child: Text(
-                              endData[1],
+                              endData[2],
                               style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
@@ -421,6 +413,24 @@ class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
               ),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Container(
+                  height: 75,
+                  padding: EdgeInsets.all(15),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red[900],
+                      onPrimary: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchStudent()),
+                      );
+                    },
+                    child: Icon(Icons.edit,
+                        size: 30, color: Colors.white),
+                  )),
               Container(
                   height: 75,
                   padding: EdgeInsets.all(15),

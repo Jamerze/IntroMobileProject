@@ -6,6 +6,7 @@ import 'package:startup_namer/homepage.dart';
 import 'package:startup_namer/meerkeuzevraagtoevoegen.dart';
 import 'package:startup_namer/openvraagtoevoegen.dart';
 import 'package:startup_namer/lector.dart';
+import 'package:startup_namer/searchStudent.dart';
 import 'package:startup_namer/startingPage.dart';
 import 'package:startup_namer/studentlogin.dart';
 import 'package:startup_namer/student.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: StartingPage(),
+      home: SearchStudent(),
     );
   }
 }

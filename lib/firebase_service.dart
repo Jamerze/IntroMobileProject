@@ -41,7 +41,7 @@ class FirebaseService {
       element.children.forEach((a) {
         if (a.child('sId').value == sNumber) {
           Student.setCurrentStudent(Student(a.child('sId').value.toString(),
-              a.child('name').value.toString()));
+              a.child('name').value.toString(), a.child('points').value.toString()));
           i++;
         }
       });
@@ -75,8 +75,7 @@ class FirebaseService {
     await databaseReference.child('students').get().asStream().forEach((s) {
       s.children.forEach((element) {
         studentList.add(Student(element.child('sId').value.toString(),
-            element.child('name').value.toString()));
-        print('added student');
+            element.child('name').value.toString(), element.child('points').value.toString()));
       });
     });
     return studentList;
@@ -104,30 +103,14 @@ class FirebaseService {
     return lectorKey;
   }
 
-  static Future<List<Student>> studentenOntvangen() async {
-    List<Student> studentenLijst = [];
-    await databaseReference
-        .child('students')
-        .get()
-        .asStream()
-        .forEach((element) {
-      element.children.forEach((a) {
-        studentenLijst.add(Student(
-            a.child('sId').value.toString(), a.child('name').value.toString()));
-      });
-    });
-
-    return studentenLijst;
-  }
-
   static Future<bool> studentToevoegen(
       String studentenNr, String studentenNaam) async {
     int i = 0;
     await databaseReference
         .child('students')
         .child("student" + studentenNr.substring(1, studentenNr.length))
-        .set({"sId": studentenNr, "name": studentenNaam});
-    await studentenOntvangen();
+        .set({"sId": studentenNr, "name": studentenNaam, "points": 0});
+    await getStudents();
     return true;
   }
 
