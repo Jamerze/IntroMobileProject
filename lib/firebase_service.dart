@@ -40,13 +40,16 @@ class FirebaseService {
         .forEach((element) {
       element.children.forEach((a) {
         if (a.child('sId').value == sNumber) {
-          Student.setCurrentStudent(Student(a.child('sId').value.toString(),
-              a.child('name').value.toString(), a.child('points').value.toString()));
+          Student.setCurrentStudent(Student(
+              a.child('sId').value.toString(),
+              a.child('name').value.toString(),
+              a.child('points').value.toString()));
           i++;
         }
       });
     });
     if (i == 1) {
+      // print(Student.getCurrentStudent().studentNumber);
       return true;
     } else {
       return false;
@@ -74,8 +77,10 @@ class FirebaseService {
     List<Student> studentList = [];
     await databaseReference.child('students').get().asStream().forEach((s) {
       s.children.forEach((element) {
-        studentList.add(Student(element.child('sId').value.toString(),
-            element.child('name').value.toString(), element.child('points').value.toString()));
+        studentList.add(Student(
+            element.child('sId').value.toString(),
+            element.child('name').value.toString(),
+            element.child('points').value.toString()));
       });
     });
     return studentList;
