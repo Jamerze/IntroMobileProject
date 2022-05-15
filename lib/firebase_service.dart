@@ -49,7 +49,7 @@ class FirebaseService {
       });
     });
     if (i == 1) {
-      // print(Student.getCurrentStudent().studentNumber);
+      print(Student.getCurrentStudent().studentNumber);
       return true;
     } else {
       return false;
@@ -88,8 +88,7 @@ class FirebaseService {
 
   static void saveExamAnswers(String sId, List<dynamic> answers) {
     final path = databaseReference.child('/examAnswers').child("/$sId");
-    path.set({'answers': Exam.currentExam.answers}).then(
-        (_) => print("sent to database"));
+    path.set({'answers': Exam.answers}).then((_) => print("sent to database"));
   }
 
   static Future<String> ontvangLectorKey(String lectorEmail) async {

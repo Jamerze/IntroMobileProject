@@ -1,7 +1,11 @@
 import 'dart:html';
+import 'dart:js_util';
 import 'dart:math';
 import 'dart:ui';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -10,13 +14,33 @@ import 'package:startup_namer/studentSubmittedPage.dart';
 import 'Classes/Student.dart';
 import 'Classes/exam.dart';
 
-class studentExamPage extends StatelessWidget {
-  studentExamPage({Key? key}) : super(key: key);
+class StudentExamPage2 extends StatefulWidget {
+  const StudentExamPage2({Key? key}) : super(key: key);
 
-  final Exam exam = Exam();
+  @override
+  StudentExamPage2State createState() => StudentExamPage2State();
+}
+
+class StudentExamPage2State extends State<StudentExamPage2> {
+  final fb = FirebaseDatabase.instance;
+  var endData;
+  var beginData;
+  var keyData;
 
   @override
   Widget build(BuildContext context) {
+    final ref = fb.ref().child('vragen');
+    final Exam exam = Exam();
+
+    var questionTypes = [];
+    ref.get().asStream().forEach((element) {
+      element.children.forEach((a) {
+        questionTypes.add(a.child('VraagType').value);
+        Exam.questions.add(a.child('Vraag').value);
+        Exam.posAnswers.add(a.child('Antwoorden').value);
+        Exam.answers.add("");
+      });
+    });
     return Scaffold(
         appBar: AppBar(
             title: Text("Examinator",
@@ -70,7 +94,7 @@ class studentExamPage extends StatelessWidget {
                       onPressed: () {
                         FirebaseService.saveExamAnswers(
                             Student.getCurrentStudent().studentNumber,
-                            Exam.currentExam.answers);
+                            Exam.answers);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -88,90 +112,79 @@ class studentExamPage extends StatelessWidget {
               ),
             ],
           ),
-          ListView(shrinkWrap: true, children: <Widget>[
-            Container(
-                height: 75,
-                child: Card(
-                    child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MultipleChoiceExamPage()),
-                          );
-                        },
+          Center(
+            child: FirebaseAnimatedList(
+              query: ref,
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, snapshot, animation, index) {
+                var snapshotValue = snapshot.value.toString();
+
+                beginData = snapshotValue.replaceAll(
+                    RegExp("{|}|subtitle: |title: "), "");
+                beginData.trim();
+
+                endData = beginData.split(',');
+
+                return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        keyData = snapshot.key;
+                      });
+                    },
+                    child: Container(
+                      height: 75,
+                      child: Card(
+                          child: ListTile(
                         title: Text(
-                          "Vraag 1",
+                          "${index + 1}.${endData[2].toString().split(':')[1]}",
                           style: TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Open Sans',
                           ),
                         ),
                         subtitle: Text(
-                          "joww hoe gaat het?",
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontFamily: 'Open Sans',
-                          ),
-                        )))),
-            Container(
-                height: 75,
-                child: Card(
-                    child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OpenQuestionPage()),
-                          );
-                        },
-                        title: Text(
-                          "Vraag 2",
+                          endData[3].toString().split(':')[1],
                           style: TextStyle(
                             fontSize: 20.0,
                             fontFamily: 'Open Sans',
                           ),
                         ),
-                        subtitle: Text(
-                          "hoe heet je?",
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontFamily: 'Open Sans',
-                          ),
-                        )))),
-            Container(
-                height: 75,
-                child: Card(
-                    child: ListTile(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CodeCheckPage()),
-                          );
+                          Exam.currentQuestion = index;
+                          var option = questionTypes[index];
+                          if (option == "meerkeuze") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MultipleChoiceExamPage()));
+                          }
+                          if (option == "open") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OpenQuestionPage()));
+                          }
+                          if (option == "codecheck") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CodeCheckPage()));
+                          }
                         },
-                        title: Text(
-                          "Vraag 3",
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontFamily: 'Open Sans',
-                          ),
-                        ),
-                        subtitle: Text(
-                          "verbeter volgende code",
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontFamily: 'Open Sans',
-                          ),
-                        ))))
-          ])
+                      )),
+                    ));
+              },
+            ),
+          ),
         ]));
   }
 }
 
 class MultipleChoiceExamPage extends StatelessWidget {
   MultipleChoiceExamPage({Key? key}) : super(key: key);
-  int questionNumber = 0;
+  int questionNumber = Exam.currentQuestion;
   final _answer = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -218,7 +231,7 @@ class MultipleChoiceExamPage extends StatelessWidget {
                         onPrimary: Colors.white,
                       ),
                       onPressed: () {
-                        //Exam.currentExam.answers[questionNumber] = _answer.text;
+                        Exam.answers[Exam.currentQuestion] = _answer.text;
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -237,14 +250,14 @@ class MultipleChoiceExamPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Vraag $questionNumber: ",
+                "Vraag ${Exam.currentQuestion + 1}:",
                 style: TextStyle(
                   fontSize: 15.0,
                   fontFamily: 'Open Sans',
                 ),
               ),
               Text(
-                "joww hoe gaat het?",
+                "${Exam.questions[Exam.currentQuestion]}",
                 style: TextStyle(
                   fontSize: 20.0,
                   fontFamily: 'Open Sans',
@@ -254,7 +267,7 @@ class MultipleChoiceExamPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "1. Goed \n2. Idk \n3. Slecht",
+                      "1. ${Exam.posAnswers[Exam.currentQuestion].toString().split(';')[0]} \n2. ${Exam.posAnswers[Exam.currentQuestion].toString().split(';')[1]} \n3. ${Exam.posAnswers[Exam.currentQuestion].toString().split(';')[2]} \n4. ${Exam.posAnswers[Exam.currentQuestion].toString().split(';')[3]} ",
                       style: TextStyle(
                         fontSize: 20.0,
                         fontFamily: 'Open Sans',
@@ -354,6 +367,7 @@ class OpenQuestionPage extends StatelessWidget {
                         onPrimary: Colors.white,
                       ),
                       onPressed: () {
+                        Exam.answers[Exam.currentQuestion] = _answer.text;
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -372,14 +386,14 @@ class OpenQuestionPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Vraag $questionNumber: ",
+                "Vraag ${Exam.currentQuestion + 1}: ",
                 style: TextStyle(
                   fontSize: 15.0,
                   fontFamily: 'Open Sans',
                 ),
               ),
               Text(
-                "hoe heet je?",
+                "${Exam.questions[Exam.currentQuestion]}",
                 style: TextStyle(
                   fontSize: 20.0,
                   fontFamily: 'Open Sans',
@@ -472,6 +486,7 @@ class CodeCheckPage extends StatelessWidget {
                         onPrimary: Colors.white,
                       ),
                       onPressed: () {
+                        Exam.answers[Exam.currentQuestion] = _answer.text;
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -490,21 +505,21 @@ class CodeCheckPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Vraag $questionNumber: ",
+                "Vraag ${Exam.currentQuestion + 1}:",
                 style: TextStyle(
                   fontSize: 15.0,
                   fontFamily: 'Open Sans',
                 ),
               ),
               Text(
-                "Verbeter volgende code",
+                "${Exam.questions[Exam.currentQuestion]} \n",
                 style: TextStyle(
                   fontSize: 20.0,
                   fontFamily: 'Open Sans',
                 ),
               ),
               Text(
-                "console.print['lol']",
+                Exam.posAnswers[Exam.currentQuestion],
                 style: TextStyle(
                   fontSize: 20.0,
                   fontFamily: 'Open Sans',

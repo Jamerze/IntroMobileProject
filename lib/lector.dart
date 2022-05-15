@@ -48,25 +48,25 @@ class _LectorPageState extends State<LectorPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-            title: Text("Examinator",
-                style: TextStyle(
-                    fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
-            backgroundColor: Colors.red[900],
-            centerTitle: true,
-            leading: Image.asset("../assets/AP_logo_letters_mono.png"),
-            leadingWidth: 70,
-            actions: <Widget>[
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+          title: Text("Examinator",
+              style: TextStyle(
+                  fontFamily: 'Open Sans', fontWeight: FontWeight.bold)),
+          backgroundColor: Colors.red[900],
+          centerTitle: true,
+          leading: Image.asset("../assets/AP_logo_letters_mono.png"),
+          leadingWidth: 70,
+          actions: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+            ),
+            Text(
+              Lector.getCurrentLector().name,
+              style: TextStyle(
+                fontSize: 20.0,
+                fontFamily: 'Open Sans',
               ),
-              Text(
-                Lector.getCurrentLector().name,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily: 'Open Sans',
-                ),
-              ),
-            ]),
+            ),
+          ]),
       body: pages[pageIndex],
       bottomNavigationBar: buildMyNavBar(context),
     );
@@ -155,6 +155,7 @@ class ExamenPaginaState extends State<ExamenPagina> {
         Center(
           child: FirebaseAnimatedList(
             query: ref,
+            scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemBuilder: (context, snapshot, animation, index) {
               var snapshotValue = snapshot.value.toString();
@@ -350,138 +351,136 @@ class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
 
     return Scaffold(
         body: Column(
-          children: [
-            Padding(
-              child: Text("Studenten",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-              padding: EdgeInsets.all(16.0),
-            ),
-            Center(
-              child: FirebaseAnimatedList(
-                query: ref,
-                shrinkWrap: true,
-                itemBuilder: (context, snapshot, animation, index) {
-                  var snapshotValue = snapshot.value.toString();
+      children: [
+        Padding(
+          child: Text("Studenten",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+          padding: EdgeInsets.all(16.0),
+        ),
+        Center(
+          child: FirebaseAnimatedList(
+            query: ref,
+            shrinkWrap: true,
+            itemBuilder: (context, snapshot, animation, index) {
+              var snapshotValue = snapshot.value.toString();
 
-                  beginData = snapshotValue.replaceAll(
-                      RegExp("{|}|subtitle: |title: "), "");
-                  beginData.trim();
+              beginData = snapshotValue.replaceAll(
+                  RegExp("{|}|subtitle: |title: "), "");
+              beginData.trim();
 
-                  endData = beginData.split(',');
+              endData = beginData.split(',');
 
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        keyData = snapshot.key;
-                      });
-                    },
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 40, right: 40, top: 5, bottom: 5),
-                        child: ListTile(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              color: Colors.white,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          tileColor: Colors.red[900],
-                          title: new Center(
-                            child: Text(
-                              endData[2],
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                          ),
-                          subtitle: new Center(
-                            child: Text(
-                              endData[0],
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
-                          ),
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    keyData = snapshot.key;
+                  });
+                },
+                child: Container(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 40, right: 40, top: 5, bottom: 5),
+                    child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: Colors.white,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      tileColor: Colors.red[900],
+                      title: new Center(
+                        child: Text(
+                          endData[2],
+                          style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                      subtitle: new Center(
+                        child: Text(
+                          endData[0],
+                          style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
                         ),
                       ),
                     ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Container(
+              height: 75,
+              padding: EdgeInsets.all(15),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red[900],
+                  onPrimary: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SearchStudent()),
                   );
                 },
-              ),
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Container(
-                  height: 75,
-                  padding: EdgeInsets.all(15),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red[900],
-                      onPrimary: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SearchStudent()),
-                      );
-                    },
-                    child: Icon(Icons.edit,
-                        size: 30, color: Colors.white),
-                  )),
-              Container(
-                  height: 75,
-                  padding: EdgeInsets.all(15),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red[900],
-                      onPrimary: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => StudentToevoegenPagina()),
-                      );
-                    },
-                    child: Icon(Icons.person_add_alt_rounded,
-                        size: 30, color: Colors.white),
-                  )),
-              Container(
-                  height: 75,
-                  padding: EdgeInsets.all(15),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red[900],
-                      onPrimary: Colors.white,
-                    ),
-                    onPressed: () async {
-                      if (await FirebaseService.studentenVerwijderen()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'De studenten werden succesvol verwijderd.')),
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LectorPage()),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'De studenten kunnen op dit moment niet verwijderd worden.')),
-                        );
-                      }
-                    },
-                    child: Icon(Icons.delete, size: 30, color: Colors.white),
-                  )),
-            ])
-          ],
-        ));
+                child: Icon(Icons.edit, size: 30, color: Colors.white),
+              )),
+          Container(
+              height: 75,
+              padding: EdgeInsets.all(15),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red[900],
+                  onPrimary: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => StudentToevoegenPagina()),
+                  );
+                },
+                child: Icon(Icons.person_add_alt_rounded,
+                    size: 30, color: Colors.white),
+              )),
+          Container(
+              height: 75,
+              padding: EdgeInsets.all(15),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red[900],
+                  onPrimary: Colors.white,
+                ),
+                onPressed: () async {
+                  if (await FirebaseService.studentenVerwijderen()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              'De studenten werden succesvol verwijderd.')),
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LectorPage()),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              'De studenten kunnen op dit moment niet verwijderd worden.')),
+                    );
+                  }
+                },
+                child: Icon(Icons.delete, size: 30, color: Colors.white),
+              )),
+        ])
+      ],
+    ));
   }
 }
 

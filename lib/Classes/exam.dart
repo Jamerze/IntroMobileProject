@@ -1,7 +1,10 @@
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 
 class Exam {
-  static Exam currentExam = Exam();
+  static int currentQuestion = 0;
+  static var questions = [];
+  static var posAnswers = [];
+  static var answers = [];
   Exam() {
     int endTime =
         DateTime.now().millisecondsSinceEpoch + 1000 * 60 * examLength;
@@ -11,7 +14,6 @@ class Exam {
 
   CountdownTimerController controller = CountdownTimerController(endTime: 0);
   int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60;
-  var answers = ["lol", "jow"];
   var correctAnswers = [];
   int score = 0;
 
