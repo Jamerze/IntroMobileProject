@@ -51,7 +51,7 @@ class StudentLogin extends StatelessWidget {
                                 value.isEmpty ||
                                 !value.contains("s") ||
                                 value.length.toInt() != 7) {
-                              return 's-nummer begint met een S en is 7 karakters lang';
+                              return 's-nummer begint met "s" en is 7 karakters lang';
                             }
                             return null;
                           },
@@ -102,8 +102,6 @@ class StudentLogin extends StatelessWidget {
                                 ),
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    // If the form is valid, display a snackbar. In the real world,
-                                    // you'd often call a server or save the information in a database.
                                     if (await FirebaseService.authorizeStudent(
                                         _sNumber.text)) {
                                       Navigator.push(
@@ -111,7 +109,6 @@ class StudentLogin extends StatelessWidget {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 StudentLandingPage()),
-                                        //moet nog veranderd worden naar student landing page
                                       );
                                     } else {
                                       ScaffoldMessenger.of(context)

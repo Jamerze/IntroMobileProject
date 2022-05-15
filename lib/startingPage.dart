@@ -41,6 +41,7 @@ class StartingPage extends StatelessWidget {
                   },
                   child: Text(
                     'Login als student',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20.0,
                       fontFamily: 'Open Sans',
@@ -66,6 +67,7 @@ class StartingPage extends StatelessWidget {
                   },
                   child: Text(
                     'Login als lector',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20.0,
                       fontFamily: 'Open Sans',

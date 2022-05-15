@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:startup_namer/Classes/Student.dart';
+import 'package:startup_namer/Classes/exam.dart';
 import 'package:startup_namer/lector.dart';
 
 class FirebaseService {
@@ -62,5 +63,11 @@ class FirebaseService {
       });
     });
     return studentList;
+  }
+
+  static void saveExamAnswers(String sId, List<dynamic> answers) {
+    final path = databaseReference.child('/examAnswers').child("/$sId");
+    path.set({'answers': Exam.currentExam.answers}).then(
+        (_) => print("sent to database"));
   }
 }
