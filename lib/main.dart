@@ -8,7 +8,6 @@ import 'package:startup_namer/openvraagtoevoegen.dart';
 import 'package:startup_namer/lector.dart';
 import 'package:startup_namer/student.dart';
 import 'package:startup_namer/studenttoevoegen.dart';
-import 'package:startup_namer/test.dart';
 
 import 'lectorlogin.dart';
 
@@ -31,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: Homepage(),
     );
   }
 }
