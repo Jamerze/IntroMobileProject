@@ -95,13 +95,13 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                               if (value == null ||
                                   value.isEmpty ||
                                   !value.contains(";")) {
-                                return 'Antwoorden van elkaar gescheiden met puntkomma (;)';
+                                return '4 Antwoorden van elkaar gescheiden met puntkomma (;)';
                               }
                               return null;
                             },
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
-                              labelText: "Antwoorden",
+                              labelText: "Antwoorden (4!)",
                               labelStyle: TextStyle(color: Colors.black),
                               enabledBorder: OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(

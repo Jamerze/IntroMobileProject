@@ -175,6 +175,7 @@ class FirebaseService {
   static Future<bool> examenVerwijderen() async {
     try {
       await databaseReference.child('vragen').remove();
+      await databaseReference.child('examAnswers').remove();
       return true;
     } catch (e) {
       return false;
