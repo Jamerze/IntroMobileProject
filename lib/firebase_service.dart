@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:startup_namer/Classes/Student.dart';
 import 'package:startup_namer/Classes/exam.dart';
 import 'package:startup_namer/lector.dart';
@@ -7,6 +8,7 @@ import 'package:startup_namer/lector.dart';
 class FirebaseService {
   // ignore: deprecated_member_use
   static final databaseReference = FirebaseDatabase.instance.reference();
+
   static Future<bool> authorizeLector(
       String lectorEmail, String password) async {
     int i = 0;
@@ -33,6 +35,7 @@ class FirebaseService {
 
   static Future<bool> authorizeStudent(String sNumber) async {
     int i = 0;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     await databaseReference
         .child('students')
         .get()
@@ -48,8 +51,10 @@ class FirebaseService {
         }
       });
     });
+
     if (i == 1) {
-      print(Student.getCurrentStudent().studentNumber);
+      prefs.setString("sID", Student.getCurrentStudent().studentNumber);
+      prefs.setString("points", Student.getCurrentStudent().points);
       return true;
     } else {
       return false;
@@ -59,13 +64,25 @@ class FirebaseService {
   static Future<bool> updateLector(
       String lectorEmail, String nieuwWachtwoord) async {
     try {
-      int i = 0;
       String lectorKey = await ontvangLectorKey(lectorEmail);
 
       await databaseReference
           .child('lectors/$lectorKey')
           .child('pass')
           .set(nieuwWachtwoord);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> updateStudentPunten(String sId, String points) async {
+    try {
+      await databaseReference
+          .child('students')
+          .child("student" + sId.substring(1, sId.length))
+          .child("points")
+          .set(points);
       return true;
     } catch (e) {
       return false;
@@ -88,7 +105,16 @@ class FirebaseService {
 
   static void saveExamAnswers(String sId, List<dynamic> answers) {
     final path = databaseReference.child('/examAnswers').child("/$sId");
-    path.set({'answers': Exam.answers}).then((_) => print("sent to database"));
+    int i = 1;
+    Exam.answers.forEach((answer) {
+      path.child("answer$i").set({'answer$i': answer});
+      i++;
+    });
+    databaseReference
+        .child('students')
+        .child("student" + sId.substring(1, sId.length))
+        .child("points")
+        .set(0);
   }
 
   static Future<String> ontvangLectorKey(String lectorEmail) async {
