@@ -145,7 +145,8 @@ class ExamenPaginaState extends State<ExamenPagina> {
     final ref = fb.ref().child('vragen');
 
     return Container(
-        child: Column(
+        child: SingleChildScrollView(
+            child: Column(
       children: [
         Padding(
           child: Text("Examenvragen",
@@ -328,7 +329,7 @@ class ExamenPaginaState extends State<ExamenPagina> {
           padding: EdgeInsets.only(top: 45),
         )
       ],
-    ));
+    )));
   }
 }
 
@@ -350,7 +351,8 @@ class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
     final ref = fb.ref().child('students');
 
     return Scaffold(
-        body: Column(
+        body: SingleChildScrollView(
+            child: Column(
       children: [
         Padding(
           child: Text("Studenten",
@@ -480,7 +482,7 @@ class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
               )),
         ])
       ],
-    ));
+    )));
   }
 }
 

@@ -5,8 +5,7 @@ import 'package:startup_namer/lector.dart';
 class StudentToevoegenPagina extends StatelessWidget {
   StudentToevoegenPagina({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
-  final studentenNr = TextEditingController();
-  final studentenNaam = TextEditingController();
+  final studentCSVInfo = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -60,47 +59,19 @@ class StudentToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: studentenNr,
+                            controller: studentCSVInfo,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
-                                  !value.contains('s') || value.length != 7 || int.tryParse(value.substring(1,7)) == null) {
-                                return 'Vul een studentenNr in (eg. s345765)';
+                                  !value.contains(";")) {
+                                return 'Er moet csv data toegevoegd worden.';
                               }
                               return null;
                             },
+                            maxLines: 7,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
-                              labelText: "StudentenNr",
-                              labelStyle: TextStyle(color: Colors.black),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                                borderSide:
-                                    BorderSide(color: Colors.red, width: 2.5),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: 400,
-                          padding: EdgeInsets.all(15),
-                          child: TextFormField(
-                            controller: studentenNaam,
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value.length < 4 || !value.contains(" ")) {
-                                return 'Vul de voornaam en achternaam van de student in.';
-                              }
-                              return null;
-                            },
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              labelText: "StudentenNaam",
+                              labelText: "Student CSV Data",
                               labelStyle: TextStyle(color: Colors.black),
                               enabledBorder: OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(
@@ -111,55 +82,104 @@ class StudentToevoegenPagina extends StatelessWidget {
                           ),
                         ),
                         Container(
-                                height: 75,
-                                padding: EdgeInsets.all(15),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.red[900],
-                                    onPrimary: Colors.white,
-                                  ),
-                                  onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      // If the form is valid, display a snackbar. In the real world,
-                                      // you'd often call a server or save the information in a database.
-                                      if (await FirebaseService.studentToevoegen(
-                                    studentenNr.text,
-                                    studentenNaam.text)) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'De student werd succesvol toegevoegd.')),
-                                  );
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LectorPage()),
-                                  );
+                            height: 75,
+                            padding: EdgeInsets.all(15),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.red[900],
+                                onPrimary: Colors.white,
+                              ),
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  var csvData = studentCSVInfo.text.split("\n");
+                                  var addedSuccessfully = false;
+                                  //Remove Header fields if present
+                                  var firstData = csvData[0].split(";");
+                                  if ((!firstData[0].contains('s') ||
+                                          firstData[0].length != 7 ||
+                                          int.tryParse(firstData[0]
+                                                  .substring(1, 7)) ==
+                                              null) &&
+                                      (!firstData[1].contains('s') ||
+                                          firstData[1].length != 7 ||
+                                          int.tryParse(firstData[1]
+                                                  .substring(1, 7)) ==
+                                              null)) {
+                                    csvData.removeAt(0);
+                                  }
+
+                                  //Process CSV Data
+                                  var indexStudentId = 0;
+                                  var indexStudentName = 1;
+                                  while(csvData.contains("")){
+                                    csvData.remove("");
+                                  }
+                                  
+                                  csvData.forEach((element) async {
+                                    if (element.contains(";")) {
+                                      var data = element.split(";");
+                                      if (data[0].length != 0 &&
+                                          data[1].length != 0) {
+                                        if (data[1].contains('s') &&
+                                            data[1].length == 7 &&
+                                            int.tryParse(
+                                                    data[1].substring(1, 7)) !=
+                                                null) {
+                                          indexStudentId = 1;
+                                          indexStudentName = 0;
+                                        } else {
+                                          indexStudentId = 0;
+                                          indexStudentName = 1;
+                                        }
+                                        print(data[indexStudentId]);
+                                        print(data[indexStudentName]);
+                                        if (await FirebaseService
+                                            .studentToevoegen(
+                                                data[indexStudentId],
+                                                data[indexStudentName])) {
+                                          if (csvData.last == element) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'De student(en) werd(en) succesvol toegevoegd.')),
+                                            );
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LectorPage()),
+                                            );
+                                          }
+                                        } else {
+                                          if (csvData.last == element) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'De student kon niet toegevoegd worden vanwege interne fouten.')),
+                                            );
+                                          }
+                                        }
+                                      }
+                                    }
+                                  });
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text(
-                                            'De student kon niet toegevoegd worden vanwege interne fouten.')),
+                                            'Student(en) kon(den) niet toegevoegd worden vanwege fouten.')),
                                   );
                                 }
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Student kon niet toegevoegd worden vanwege fouten.')),
-                                      );
-                                    }
-                                  },
-                                  child: Text(
-                                    'Voeg Student toe',
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontFamily: 'Open Sans',
-                                    ),
-                                  ),
-                                ))
+                              },
+                              child: Text(
+                                'Voeg Student toe',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontFamily: 'Open Sans',
+                                ),
+                              ),
+                            ))
                       ]),
                 ]))));
   }
