@@ -7,39 +7,39 @@ import 'package:startup_namer/add_multiplechoice_question.dart';
 import 'package:startup_namer/add_open_question.dart';
 import 'package:startup_namer/search_student.dart';
 import 'package:startup_namer/starting_page.dart';
-import 'package:startup_namer/studenttoevoegen.dart';
+import 'package:startup_namer/add_student.dart';
 
-class Lector {
-  static Lector _currentLector = Lector("");
+class Teacher {
+  static Teacher _currentLector = Teacher("");
   String name = "";
 
-  Lector(n) {
+  Teacher(n) {
     name = n;
   }
 
-  static void setCurrentLector(lector) {
+  static void setCurrentTeacher(lector) {
     _currentLector = lector;
   }
 
-  static Lector getCurrentLector() {
+  static Teacher getCurrentTeacher() {
     return _currentLector;
   }
 }
 
-class LectorPage extends StatefulWidget {
-  const LectorPage({Key? key}) : super(key: key);
+class TeacherPage extends StatefulWidget {
+  const TeacherPage({Key? key}) : super(key: key);
 
   @override
-  _LectorPageState createState() => _LectorPageState();
+  TeacherPageState createState() => TeacherPageState();
 }
 
-class _LectorPageState extends State<LectorPage> {
+class TeacherPageState extends State<TeacherPage> {
   int pageIndex = 0;
 
   final pages = [
-    ExamenPagina(),
-    const StudentenLijstPagina(),
-    InstellingenPagina(),
+    ExamPage(),
+    const StudentListPage(),
+    settingsPage(),
   ];
 
   @override
@@ -59,7 +59,7 @@ class _LectorPageState extends State<LectorPage> {
               padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
             ),
             Text(
-              Lector.getCurrentLector().name,
+              Teacher.getCurrentTeacher().name,
               style: TextStyle(
                 fontSize: 20.0,
                 fontFamily: 'Open Sans',
@@ -126,14 +126,14 @@ class _LectorPageState extends State<LectorPage> {
   }
 }
 
-class ExamenPagina extends StatefulWidget {
-  const ExamenPagina({Key? key}) : super(key: key);
+class ExamPage extends StatefulWidget {
+  const ExamPage({Key? key}) : super(key: key);
 
   @override
-  ExamenPaginaState createState() => ExamenPaginaState();
+  ExamPageState createState() => ExamPageState();
 }
 
-class ExamenPaginaState extends State<ExamenPagina> {
+class ExamPageState extends State<ExamPage> {
   final fb = FirebaseDatabase.instance;
   var endData;
   var beginData;
@@ -226,7 +226,7 @@ class ExamenPaginaState extends State<ExamenPagina> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  MeerkeuzevraagToevoegenPagina()),
+                                  AddMultipleChoiceQuestionPage()),
                         );
                       },
                       child: Row(children: [
@@ -278,8 +278,7 @@ class ExamenPaginaState extends State<ExamenPagina> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  CodecheckvraagToevoegenPagina()),
+                              builder: (context) => AddCodeCheckQuestionPage()),
                         );
                       },
                       child: Row(children: [
@@ -302,7 +301,7 @@ class ExamenPaginaState extends State<ExamenPagina> {
                       onPrimary: Colors.white,
                     ),
                     onPressed: () async {
-                      if (await FirebaseService.examenVerwijderen()) {
+                      if (await FirebaseService.deleteExam()) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content: Text(
@@ -311,7 +310,7 @@ class ExamenPaginaState extends State<ExamenPagina> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const LectorPage()),
+                              builder: (context) => const TeacherPage()),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -332,14 +331,14 @@ class ExamenPaginaState extends State<ExamenPagina> {
   }
 }
 
-class StudentenLijstPagina extends StatefulWidget {
-  const StudentenLijstPagina({Key? key}) : super(key: key);
+class StudentListPage extends StatefulWidget {
+  const StudentListPage({Key? key}) : super(key: key);
 
   @override
-  StudentenLijstPaginaState createState() => StudentenLijstPaginaState();
+  StudentListPageState createState() => StudentListPageState();
 }
 
-class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
+class StudentListPageState extends State<StudentListPage> {
   final fb = FirebaseDatabase.instance;
   var endData;
   var beginData;
@@ -458,7 +457,7 @@ class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
                   onPrimary: Colors.white,
                 ),
                 onPressed: () async {
-                  if (await FirebaseService.studentenVerwijderen()) {
+                  if (await FirebaseService.deleteStudent()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                           content: Text(
@@ -467,7 +466,7 @@ class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const LectorPage()),
+                          builder: (context) => const TeacherPage()),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -485,13 +484,13 @@ class StudentenLijstPaginaState extends State<StudentenLijstPagina> {
   }
 }
 
-class InstellingenPagina extends StatelessWidget {
-  InstellingenPagina({Key? key}) : super(key: key);
+class settingsPage extends StatelessWidget {
+  settingsPage({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
   final email = TextEditingController();
-  final oudwachtwoord = TextEditingController();
-  final nieuwwachtwoord = TextEditingController();
-  final nieuwwachtwoordherhaald = TextEditingController();
+  final oldPassword = TextEditingController();
+  final newPassword = TextEditingController();
+  final newPasswordRepeated = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -546,7 +545,7 @@ class InstellingenPagina extends StatelessWidget {
                     }
                     return null;
                   },
-                  controller: oudwachtwoord,
+                  controller: oldPassword,
                   obscureText: true,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
@@ -573,7 +572,7 @@ class InstellingenPagina extends StatelessWidget {
                     }
                     return null;
                   },
-                  controller: nieuwwachtwoord,
+                  controller: newPassword,
                   obscureText: true,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
@@ -597,12 +596,12 @@ class InstellingenPagina extends StatelessWidget {
                   validator: (value) {
                     if (value == null || value.isEmpty || value.length < 8) {
                       return 'Wachtwoord moet ingevuld en minstens 8 karakters zijn.';
-                    } else if (value != nieuwwachtwoord.text) {
+                    } else if (value != newPassword.text) {
                       return 'Wachtwoord komt niet overeen met het nieuwe wachtwoord.';
                     }
                     return null;
                   },
-                  controller: nieuwwachtwoordherhaald,
+                  controller: newPasswordRepeated,
                   obscureText: true,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
@@ -634,12 +633,12 @@ class InstellingenPagina extends StatelessWidget {
                               if (_formKey.currentState!.validate()) {
                                 // If the form is valid, display a snackbar. In the real world,
                                 // you'd often call a server or save the information in a database.
-                                if (await FirebaseService.authorizeLector(
-                                    email.text, oudwachtwoord.text)) {
-                                  if (nieuwwachtwoord.text ==
-                                      nieuwwachtwoordherhaald.text) {
-                                    if (await FirebaseService.updateLector(
-                                        email.text, nieuwwachtwoord.text)) {
+                                if (await FirebaseService.authorizeTeacher(
+                                    email.text, oldPassword.text)) {
+                                  if (newPassword.text ==
+                                      newPasswordRepeated.text) {
+                                    if (await FirebaseService.updateTeacher(
+                                        email.text, newPassword.text)) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         const SnackBar(
@@ -650,7 +649,7 @@ class InstellingenPagina extends StatelessWidget {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const LectorPage()),
+                                                const TeacherPage()),
                                       );
                                     } else {
                                       ScaffoldMessenger.of(context)

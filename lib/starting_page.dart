@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/lector_login.dart';
+import 'package:startup_namer/teacher_login.dart';
 import 'package:startup_namer/student_login.dart';
 
 class StartingPage extends StatelessWidget {

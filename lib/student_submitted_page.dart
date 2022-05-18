@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'Classes/Student.dart';
 
 class StudentSubmittedPage extends StatelessWidget {

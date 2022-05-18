@@ -1,4 +1,4 @@
-class StudentLocatie {
+class StudentLocation {
   final int placeId;
   final String licence;
   final String osmType;
@@ -9,7 +9,7 @@ class StudentLocatie {
   final Address address;
   final List<String> boundingbox;
 
-  StudentLocatie(
+  StudentLocation(
       {required this.placeId,
       required this.licence,
       required this.osmType,
@@ -20,8 +20,8 @@ class StudentLocatie {
       required this.address,
       required this.boundingbox});
 
-  factory StudentLocatie.fromJson(Map<String, dynamic> json) {
-    return StudentLocatie(
+  factory StudentLocation.fromJson(Map<String, dynamic> json) {
+    return StudentLocation(
         placeId: json['placeId'],
         licence: json['licence'],
         osmType: json['osmType'],

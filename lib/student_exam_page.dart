@@ -10,7 +10,7 @@ import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:startup_namer/firebase_service.dart';
-import 'package:startup_namer/studentSubmittedPage.dart';
+import 'package:startup_namer/student_submitted_page.dart';
 import 'Classes/Student.dart';
 import 'Classes/exam.dart';
 

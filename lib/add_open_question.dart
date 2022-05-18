@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:startup_namer/firebase_service.dart';
-import 'package:startup_namer/lector.dart';
+import 'package:startup_namer/teacher.dart';
 
 class OpenvraagToevoegenPagina extends StatelessWidget {
   OpenvraagToevoegenPagina({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
-  final vraag = TextEditingController();
+  final question = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class OpenvraagToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: vraag,
+                            controller: question,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
@@ -89,12 +89,9 @@ class OpenvraagToevoegenPagina extends StatelessWidget {
                               primary: Colors.red[900], // background
                             ),
                             onPressed: () async {
-                              // Validate returns true if the form is valid, or false otherwise.
                               if (_formKey.currentState!.validate()) {
-                                // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.
-                                if (await FirebaseService.examenvraagToevoegen(
-                                    "", "", vraag.text, "open")) {
+                                if (await FirebaseService.addExamQuestion(
+                                    "", "", question.text, "open")) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text(
@@ -104,7 +101,7 @@ class OpenvraagToevoegenPagina extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const LectorPage()),
+                                            const TeacherPage()),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(

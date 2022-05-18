@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/lector.dart';
+import 'package:startup_namer/teacher.dart';
 import 'firebase_service.dart';
 
 class LectorLogin extends StatelessWidget {
@@ -134,13 +134,13 @@ class LectorLogin extends StatelessWidget {
                                       
                                       // If the form is valid, display a snackbar. In the real world,
                                       // you'd often call a server or save the information in a database.
-                                      if (await FirebaseService.authorizeLector(
+                                      if (await FirebaseService.authorizeTeacher(
                                           email.text, password.text)) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const LectorPage()),
+                                                  const TeacherPage()),
                                         );
                                       } else {
                                         ScaffoldMessenger.of(context)

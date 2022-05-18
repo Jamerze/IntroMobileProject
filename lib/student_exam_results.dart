@@ -4,24 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:startup_namer/Classes/student.dart';
 import 'package:startup_namer/firebase_service.dart';
-import 'package:startup_namer/lector.dart';
+import 'package:startup_namer/teacher.dart';
 
-class StudentExamenOverview extends StatefulWidget {
-  const StudentExamenOverview({Key? key}) : super(key: key);
+class StudentExamResults extends StatefulWidget {
+  const StudentExamResults({Key? key}) : super(key: key);
 
   @override
-  StudentExamenOverviewState createState() => StudentExamenOverviewState();
+  StudentExamResultsState createState() => StudentExamResultsState();
 }
 
-class StudentExamenOverviewState extends State<StudentExamenOverview> {
+class StudentExamResultsState extends State<StudentExamResults> {
   final _formKey = GlobalKey<FormState>();
   final fb = FirebaseDatabase.instance;
   var points = TextEditingController();
 
+  //Answer Data
   var endData;
   var beginData;
   var keyData;
 
+  //Question Data
   var endData2;
   var beginData2;
   var keyData2;
@@ -62,7 +64,7 @@ class StudentExamenOverviewState extends State<StudentExamenOverview> {
                   padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                 ),
                 Text(
-                  Lector.getCurrentLector().name,
+                  Teacher.getCurrentTeacher().name,
                   style: TextStyle(
                     fontSize: 20.0,
                     fontFamily: 'Open Sans',
@@ -196,117 +198,121 @@ class StudentExamenOverviewState extends State<StudentExamenOverview> {
                   ),
                 ],
               )),
-              Container(child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          width: 400,
-                          padding: EdgeInsets.all(15),
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  int.parse(value) == null || (int.parse(value) != null && int.parse(value) > 20 || int.parse(value) < 0)) {
-                                return 'Een cijfer tussen 0 en 20 dient ingevuld te worden.';
-                              }
-                              return null;
-                            },
-                            controller: points,
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              labelText: "Punten",
-                              labelStyle: TextStyle(color: Colors.black),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                                borderSide:
-                                    BorderSide(color: Colors.red, width: 2.5),
+              Container(
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            width: 400,
+                            padding: EdgeInsets.all(15),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    int.parse(value) == null ||
+                                    (int.parse(value) != null &&
+                                            int.parse(value) > 20 ||
+                                        int.parse(value) < 0)) {
+                                  return 'Een cijfer tussen 0 en 20 dient ingevuld te worden.';
+                                }
+                                return null;
+                              },
+                              controller: points,
+                              style: TextStyle(color: Colors.black),
+                              decoration: InputDecoration(
+                                labelText: "Punten",
+                                labelStyle: TextStyle(color: Colors.black),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide:
+                                      BorderSide(color: Colors.red, width: 2.5),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                                height: 75,
-                                padding: EdgeInsets.all(15),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.red[900],
-                                    onPrimary: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    'Ga Terug',
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontFamily: 'Open Sans',
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                  height: 75,
+                                  padding: EdgeInsets.all(15),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.red[900],
+                                      onPrimary: Colors.white,
                                     ),
-                                  ),
-                                )),
-                            Container(
-                                height: 75,
-                                padding: EdgeInsets.all(15),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.red[900],
-                                    onPrimary: Colors.white,
-                                  ),
-                                  onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      
-                                      // If the form is valid, display a snackbar. In the real world,
-                                      // you'd often call a server or save the information in a database.
-                                      if (await FirebaseService.updateStudentPunten(
-                                          studentNr, points.text)) {
-                                            ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text(
-                                                  'Punten werden toegekend aan de student.')),
-                                        );
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const LectorPage()),
-                                        );
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      'Ga Terug',
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        fontFamily: 'Open Sans',
+                                      ),
+                                    ),
+                                  )),
+                              Container(
+                                  height: 75,
+                                  padding: EdgeInsets.all(15),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.red[900],
+                                      onPrimary: Colors.white,
+                                    ),
+                                    onPressed: () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        // If the form is valid, display a snackbar. In the real world,
+                                        // you'd often call a server or save the information in a database.
+                                        if (await FirebaseService
+                                            .updateStudentPoints(
+                                                studentNr, points.text)) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                                content: Text(
+                                                    'Punten werden toegekend aan de student.')),
+                                          );
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const TeacherPage()),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                                content: Text(
+                                                    'Punten konden niet toegekend worden.')),
+                                          );
+                                        }
                                       } else {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
                                               content: Text(
-                                                  'Punten konden niet toegekend worden.')),
+                                                  'Punten moeten correct ingevuld worden.')),
                                         );
                                       }
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Punten moeten correct ingevuld worden.')),
-                                      );
-                                    }
-                                  },
-                                  child: Text(
-                                    'Opslaan',
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontFamily: 'Open Sans',
+                                    },
+                                    child: Text(
+                                      'Opslaan',
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        fontFamily: 'Open Sans',
+                                      ),
                                     ),
-                                  ),
-                                ))
-                          ],
-                        )
-                      ],
-                    )))
+                                  ))
+                            ],
+                          )
+                        ],
+                      )))
             ],
           ));
     } else {
@@ -324,7 +330,7 @@ class StudentExamenOverviewState extends State<StudentExamenOverview> {
                 padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
               ),
               Text(
-                Lector.getCurrentLector().name,
+                Teacher.getCurrentTeacher().name,
                 style: TextStyle(
                   fontSize: 20.0,
                   fontFamily: 'Open Sans',

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:startup_namer/firebase_service.dart';
-import 'package:startup_namer/lector.dart';
-import 'package:startup_namer/lectorlogin.dart';
+import 'package:startup_namer/teacher.dart';
+import 'package:startup_namer/teacher_login.dart';
 
-class CodecheckvraagToevoegenPagina extends StatelessWidget {
-  CodecheckvraagToevoegenPagina({Key? key}) : super(key: key);
+class AddCodeCheckQuestionPage extends StatelessWidget {
+  AddCodeCheckQuestionPage({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
-  final vraag = TextEditingController();
-  final foutievecode = TextEditingController();
-  final correctecode = TextEditingController();
+  final question = TextEditingController();
+  final wrongCode = TextEditingController();
+  final correctCode = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class CodecheckvraagToevoegenPagina extends StatelessWidget {
                     width: 400,
                     padding: EdgeInsets.all(15),
                     child: TextFormField(
-                      controller: vraag,
+                      controller: question,
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
@@ -87,7 +87,7 @@ class CodecheckvraagToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: foutievecode,
+                            controller: wrongCode,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Er moet foutieve code ingevoerd worden.';
@@ -112,7 +112,7 @@ class CodecheckvraagToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: correctecode,
+                            controller: correctCode,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Er moet een verbetering ingevuld worden.';
@@ -140,14 +140,11 @@ class CodecheckvraagToevoegenPagina extends StatelessWidget {
                       primary: Colors.red[900], // background
                     ),
                     onPressed: () async {
-                      // Validate returns true if the form is valid, or false otherwise.
                       if (_formKey.currentState!.validate()) {
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
-                        if (await FirebaseService.examenvraagToevoegen(
-                                    foutievecode.text,
-                                    correctecode.text,
-                                    vraag.text,
+                        if (await FirebaseService.addExamQuestion(
+                                    wrongCode.text,
+                                    correctCode.text,
+                                    question.text,
                                     "codecheck")) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -158,7 +155,7 @@ class CodecheckvraagToevoegenPagina extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const LectorPage()),
+                                            const TeacherPage()),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(

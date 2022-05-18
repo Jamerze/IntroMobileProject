@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:startup_namer/firebase_service.dart';
-import 'package:startup_namer/lector.dart';
+import 'package:startup_namer/teacher.dart';
 
 class StudentToevoegenPagina extends StatelessWidget {
   StudentToevoegenPagina({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
-  final studentCSVInfo = TextEditingController();
+  final studentCsvInfo = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class StudentToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: studentCSVInfo,
+                            controller: studentCsvInfo,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
@@ -91,8 +91,8 @@ class StudentToevoegenPagina extends StatelessWidget {
                               ),
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
-                                  var csvData = studentCSVInfo.text.split("\n");
-                                  var addedSuccessfully = false;
+                                  var csvData = studentCsvInfo.text.split("\n");
+
                                   //Remove Header fields if present
                                   var firstData = csvData[0].split(";");
                                   if ((!firstData[0].contains('s') ||
@@ -111,10 +111,10 @@ class StudentToevoegenPagina extends StatelessWidget {
                                   //Process CSV Data
                                   var indexStudentId = 0;
                                   var indexStudentName = 1;
-                                  while(csvData.contains("")){
+                                  while (csvData.contains("")) {
                                     csvData.remove("");
                                   }
-                                  
+
                                   csvData.forEach((element) async {
                                     if (element.contains(";")) {
                                       var data = element.split(";");
@@ -131,10 +131,8 @@ class StudentToevoegenPagina extends StatelessWidget {
                                           indexStudentId = 0;
                                           indexStudentName = 1;
                                         }
-                                        print(data[indexStudentId]);
-                                        print(data[indexStudentName]);
                                         if (await FirebaseService
-                                            .studentToevoegen(
+                                            .addStudent(
                                                 data[indexStudentId],
                                                 data[indexStudentName])) {
                                           if (csvData.last == element) {
@@ -148,7 +146,7 @@ class StudentToevoegenPagina extends StatelessWidget {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const LectorPage()),
+                                                      const TeacherPage()),
                                             );
                                           }
                                         } else {

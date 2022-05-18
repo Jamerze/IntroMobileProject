@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/studentLandingPage.dart';
+import 'package:startup_namer/student_landing_page.dart';
 import 'Classes/Student.dart';
 import 'firebase_service.dart';
-import 'lector.dart';
+import 'teacher.dart';
 
 class StudentLogin extends StatelessWidget {
   StudentLogin({Key? key}) : super(key: key);
-  final _sNumber = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final sNumber = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class StudentLogin extends StatelessWidget {
                         width: 400,
                         padding: EdgeInsets.all(15),
                         child: TextFormField(
-                          controller: _sNumber,
+                          controller: sNumber,
                           validator: (value) {
                             if (value == null ||
                                 value.isEmpty ||
@@ -103,7 +103,7 @@ class StudentLogin extends StatelessWidget {
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     if (await FirebaseService.authorizeStudent(
-                                        _sNumber.text)) {
+                                        sNumber.text)) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

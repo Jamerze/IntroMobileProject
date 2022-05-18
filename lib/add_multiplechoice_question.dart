@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/lector.dart';
+import 'package:startup_namer/teacher.dart';
 import 'firebase_service.dart';
 
-class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
-  MeerkeuzevraagToevoegenPagina({Key? key}) : super(key: key);
+class AddMultipleChoiceQuestionPage extends StatelessWidget {
+  AddMultipleChoiceQuestionPage({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
-  final vraag = TextEditingController();
-  final antwoorden = TextEditingController();
-  final correctantwoord = TextEditingController();
+  final question = TextEditingController();
+  final answers = TextEditingController();
+  final correctAnswer = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: vraag,
+                            controller: question,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
@@ -90,7 +90,7 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: antwoorden,
+                            controller: answers,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
@@ -116,11 +116,11 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                           width: 400,
                           padding: EdgeInsets.all(15),
                           child: TextFormField(
-                            controller: correctantwoord,
+                            controller: correctAnswer,
                             validator: (value) {
                               if (value == null ||
                                   value.isEmpty ||
-                                  !antwoorden.text.contains(value)) {
+                                  !answers.text.contains(value)) {
                                 return 'Antwoord komt niet in bovenstaande opties voor.';
                               }
                               return null;
@@ -143,14 +143,11 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                               primary: Colors.red[900], // background
                             ),
                             onPressed: () async {
-                              // Validate returns true if the form is valid, or false otherwise.
                               if (_formKey.currentState!.validate()) {
-                                // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.
-                                if (await FirebaseService.examenvraagToevoegen(
-                                    antwoorden.text,
-                                    correctantwoord.text,
-                                    vraag.text,
+                                if (await FirebaseService.addExamQuestion(
+                                    answers.text,
+                                    correctAnswer.text,
+                                    question.text,
                                     "meerkeuze")) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -161,7 +158,7 @@ class MeerkeuzevraagToevoegenPagina extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const LectorPage()),
+                                            const TeacherPage()),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(

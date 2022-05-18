@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:startup_namer/Classes/Student.dart';
 import 'package:startup_namer/Classes/exam.dart';
-import 'package:startup_namer/lector.dart';
+import 'package:startup_namer/teacher.dart';
 
 class FirebaseService {
   // ignore: deprecated_member_use
   static final databaseReference = FirebaseDatabase.instance.reference();
 
-  static Future<bool> authorizeLector(
+  //Teacher
+  static Future<bool> authorizeTeacher(
       String lectorEmail, String password) async {
     int i = 0;
     await databaseReference
@@ -21,7 +22,7 @@ class FirebaseService {
         print(a.key);
         if (a.child('email').value == lectorEmail &&
             a.child('pass').value == password) {
-          Lector.setCurrentLector(Lector(a.key));
+          Teacher.setCurrentTeacher(Teacher(a.key));
           i++;
         }
       });
@@ -33,6 +34,39 @@ class FirebaseService {
     }
   }
 
+  static Future<bool> updateTeacher(
+      String lectorEmail, String nieuwWachtwoord) async {
+    try {
+      String lectorKey = await receiveTeacherKey(lectorEmail);
+
+      await databaseReference
+          .child('lectors/$lectorKey')
+          .child('pass')
+          .set(nieuwWachtwoord);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<String> receiveTeacherKey(String lectorEmail) async {
+    String lectorKey = "";
+    await databaseReference
+        .child('lectors')
+        .get()
+        .asStream()
+        .forEach((element) {
+      element.children.forEach((a) {
+        if (a.child('email').value == lectorEmail) {
+          lectorKey = a.key.toString();
+        }
+      });
+    });
+    return lectorKey;
+  }
+
+
+  //Student
   static Future<bool> authorizeStudent(String sNumber) async {
     int i = 0;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -61,22 +95,27 @@ class FirebaseService {
     }
   }
 
-  static Future<bool> updateLector(
-      String lectorEmail, String nieuwWachtwoord) async {
-    try {
-      String lectorKey = await ontvangLectorKey(lectorEmail);
+  static Future<bool> addStudent(
+      String studentenNr, String studentenNaam) async {
+    int i = 0;
+    await databaseReference
+        .child('students')
+        .child("student" + studentenNr.substring(1, studentenNr.length))
+        .set({"sId": studentenNr, "name": studentenNaam, "points": 0});
+    await getStudents();
+    return true;
+  }
 
-      await databaseReference
-          .child('lectors/$lectorKey')
-          .child('pass')
-          .set(nieuwWachtwoord);
+  static Future<bool> deleteStudent() async {
+    try {
+      await databaseReference.child('studenten').remove();
       return true;
     } catch (e) {
       return false;
     }
   }
 
-  static Future<bool> updateStudentPunten(String sId, String points) async {
+  static Future<bool> updateStudentPoints(String sId, String points) async {
     try {
       await databaseReference
           .child('students')
@@ -103,6 +142,8 @@ class FirebaseService {
     return studentList;
   }
 
+
+  //Exam
   static void saveExamAnswers(String sId, List<dynamic> answers) {
     final path = databaseReference.child('/examAnswers').child("/$sId");
     int i = 1;
@@ -117,45 +158,9 @@ class FirebaseService {
         .set(0);
   }
 
-  static Future<String> ontvangLectorKey(String lectorEmail) async {
-    String lectorKey = "";
-    await databaseReference
-        .child('lectors')
-        .get()
-        .asStream()
-        .forEach((element) {
-      element.children.forEach((a) {
-        if (a.child('email').value == lectorEmail) {
-          lectorKey = a.key.toString();
-        }
-      });
-    });
-    return lectorKey;
-  }
-
-  static Future<bool> studentToevoegen(
-      String studentenNr, String studentenNaam) async {
-    int i = 0;
-    await databaseReference
-        .child('students')
-        .child("student" + studentenNr.substring(1, studentenNr.length))
-        .set({"sId": studentenNr, "name": studentenNaam, "points": 0});
-    await getStudents();
-    return true;
-  }
-
-  static Future<bool> studentenVerwijderen() async {
-    try {
-      await databaseReference.child('studenten').remove();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  static Future<bool> examenvraagToevoegen(String antwoorden,
+  static Future<bool> addExamQuestion(String antwoorden,
       String correctAntwoord, String vraag, String vraagType) async {
-    int i = await laatsteVraagIdPlus1Terugkrijgen();
+    int i = await getLastQuestionIdPlus1();
     try {
       await databaseReference.child('vragen').child('Vraag$i').set({
         "Antwoorden": antwoorden,
@@ -172,7 +177,7 @@ class FirebaseService {
     }
   }
 
-  static Future<bool> examenVerwijderen() async {
+  static Future<bool> deleteExam() async {
     try {
       await databaseReference.child('vragen').remove();
       await databaseReference.child('examAnswers').remove();
@@ -182,7 +187,7 @@ class FirebaseService {
     }
   }
 
-  static Future<int> laatsteVraagIdPlus1Terugkrijgen() async {
+  static Future<int> getLastQuestionIdPlus1() async {
     DataSnapshot laatsteVraag =
         await databaseReference.child('vragen').get().asStream().last;
     if (laatsteVraag.children.length == 0) {
