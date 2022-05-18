@@ -1,13 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:startup_namer/codecheckvraagtoevoegen.dart';
+import 'package:startup_namer/add_codecheck_question.dart';
 import 'package:startup_namer/firebase_service.dart';
-import 'package:startup_namer/homepage.dart';
-import 'package:startup_namer/meerkeuzevraagtoevoegen.dart';
-import 'package:startup_namer/openvraagtoevoegen.dart';
-import 'package:startup_namer/searchStudent.dart';
-import 'package:startup_namer/startingPage.dart';
+import 'package:startup_namer/add_multiplechoice_question.dart';
+import 'package:startup_namer/add_open_question.dart';
+import 'package:startup_namer/search_student.dart';
+import 'package:startup_namer/starting_page.dart';
 import 'package:startup_namer/studenttoevoegen.dart';
 
 class Lector {

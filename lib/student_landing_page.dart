@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/startingPage.dart';
-import 'package:startup_namer/studentExamPage.dart';
-import 'package:startup_namer/studentlogin.dart';
+import 'package:startup_namer/starting_page.dart';
+import 'package:startup_namer/student_exam_page.dart';
+import 'package:startup_namer/student_login.dart';
 import 'Classes/Student.dart';
 import 'firebase_service.dart';
 

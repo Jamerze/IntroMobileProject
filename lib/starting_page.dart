@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/lectorlogin.dart';
-import 'package:startup_namer/studentlogin.dart';
+import 'package:startup_namer/lector_login.dart';
+import 'package:startup_namer/student_login.dart';
 
 class StartingPage extends StatelessWidget {
   StartingPage({Key? key}) : super(key: key);
