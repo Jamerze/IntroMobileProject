@@ -77,7 +77,7 @@ class StudentExamResultsState extends State<StudentExamResults> {
                   child: Column(
                 children: [
                   Padding(
-                    child: Text("Examenvragen",
+                    child: Text("Examenvragen:",
                         style: TextStyle(
                             fontSize: 30, fontWeight: FontWeight.bold)),
                     padding: EdgeInsets.all(16.0),

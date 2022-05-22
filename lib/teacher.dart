@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:startup_namer/Classes/student.dart';
 import 'package:startup_namer/add_codecheck_question.dart';
 import 'package:startup_namer/firebase_service.dart';
 import 'package:startup_namer/add_multiplechoice_question.dart';
@@ -8,6 +9,7 @@ import 'package:startup_namer/add_open_question.dart';
 import 'package:startup_namer/search_student.dart';
 import 'package:startup_namer/starting_page.dart';
 import 'package:startup_namer/add_student.dart';
+import 'package:startup_namer/student_exam_results.dart';
 
 class Teacher {
   static Teacher _currentLector = Teacher("");
@@ -348,6 +350,12 @@ class StudentListPageState extends State<StudentListPage> {
   Widget build(BuildContext context) {
     final ref = fb.ref().child('students');
 
+    ref.get().asStream().forEach((element) {
+      element.children.forEach((a) {
+        Student.students.add(a.child('sId').value.toString());
+      });
+    });
+
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(
@@ -378,36 +386,42 @@ class StudentListPageState extends State<StudentListPage> {
                 },
                 child: Container(
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 40, right: 40, top: 5, bottom: 5),
-                    child: ListTile(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: Colors.white,
+                      padding: const EdgeInsets.only(
+                          left: 40, right: 40, top: 5, bottom: 5),
+                      child: Card(
+                        child: ListTile(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: Colors.white,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          title: Text(
+                            "${endData[2].toString().split(': ')[1]}",
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontFamily: 'Open Sans',
+                            ),
+                          ),
+                          subtitle: Text(
+                            endData[0].toString().split(': ')[1],
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontFamily: 'Open Sans',
+                            ),
+                          ),
+                          onTap: () async {
+                            if (await FirebaseService.authorizeStudent(
+                                Student.students[index])) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => StudentExamResults()),
+                              );
+                            }
+                          },
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      tileColor: Colors.red[900],
-                      title: new Center(
-                        child: Text(
-                          endData[2],
-                          style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                      subtitle: new Center(
-                        child: Text(
-                          endData[0],
-                          style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  ),
+                      )),
                 ),
               );
             },
